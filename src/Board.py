@@ -1,38 +1,33 @@
-import copy
 import numpy as np
+
 
 class Board:
 
-    def __init__(self, rows, cols, n, board=None):
+    def __init__(self, rows, cols, n, position=None):
         self.rows = rows
         self.cols = cols
         self.n = n
-        self.board = board if board is not None else np.zeros((rows,cols))
+        self.position = position if position is not None else np.zeros(rows * cols)
 
     def apply_move(self, col, player):
 
-        i = -1
-        for r in range(self.rows):
-            if self.board[r][col] == 0:
-                i = r
+        if not (player == 1 or player == -1):
+            raise ValueError('Player must be 1 or -1')
+
+        for p in range(col * self.rows,
+                       (col + 1) * self.rows):
+            if self.position[p] == 0:
+                self.position[p] = player
                 break
-
-        if i == -1:
-            raise ValueError('Board is full at this column')
-
-        self.board[i][col] = player
+            if p == (col + 1) * self.rows - 1:
+                raise ValueError('Column full')
 
         return self
+
+    def is_winning(self, player):
+
+        return False
 
 
 if __name__ == "__main__":
     board = Board(3, 3, 2)
-    print(board.board)
-    board.apply_move(0,1)
-    print(board.board)
-    board.apply_move(0,1)
-    print(board.board)
-    board.apply_move(0,1)
-    print(board.board)
-    board.apply_move(0,1)
-    print(board.board)
